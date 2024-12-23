@@ -104,6 +104,45 @@ async function run() {
       }
     });
 
+    // Update for My Tutorials
+ 
+app.patch("/My-Tutorials-update/:id", async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+  const filter = { _id: new ObjectId(id) };
+  const updateDoc = {
+    $set: updateData,
+  };
+
+  try {
+    const result = await tutorsCollection.updateOne(filter, updateDoc);
+    if (result.modifiedCount > 0) {
+      res.json({ message: "Booking updated successfully" });
+    } else {
+      res.status(404).json({ error: "Booking not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error updating booking" });
+  }
+});
+// Delete a My Tutorials
+app.delete("/My-Tutorials-delete/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await tutorsCollection.deleteOne({
+      _id: new ObjectId(id),
+    });
+    if (result.deletedCount > 0) {
+      res.json({ message: "Tutorials deleted successfully" });
+    } else {
+      res.status(404).json({ error: "Tutorials not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting Tutorials" });
+  }
+});
+
+
     // Add a new booking
     app.post("/bookings", async (req, res) => {
       const bookingDetails = req.body;
