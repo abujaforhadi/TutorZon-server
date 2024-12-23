@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ObjectId, ServerApiVersion } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 3000;  
@@ -47,20 +47,20 @@ const client = new MongoClient(uri, {
         res.status(500).send("Error fetching data from database");
       }
     });
-    app.get("(/tutor/:details", async (req, res) => {
-      const { id } = req.params;
+    app.get("/tutor/:details", async (req, res) => {
+      const { details } = req.params; // Use the correct parameter name from the URL
       try {
-        const product = await collection.findOne({ _id: new ObjectId(id) });
+        const product = await collection.findOne({ _id: new ObjectId(details) });
         if (product) {
           res.json(product);
         } else {
           res.status(404).json({ error: "Product not found" });
         }
       } catch (error) {
-        // console.error("Error fetching product:", error);
         res.status(500).json({ error: "Error fetching product" });
       }
     });
+    
 
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
