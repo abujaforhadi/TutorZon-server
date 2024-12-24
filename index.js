@@ -24,6 +24,7 @@ app.use(
       "assigment11-7f8f3.firebaseapp.com",
     ],
     credentials: true,
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json());
@@ -65,42 +66,40 @@ async function run() {
     const CategoryCollection = db.collection("category");
 
     // save as cookies
-    app.post('/jwt', async (req, res) => {
-      const email = req.body
+    app.post("/jwt", async (req, res) => {
+      const email = req.body;
       // create token
       const token = jwt.sign(email, process.env.secret_key, {
-        expiresIn: '1h',
-      })
-      // console.log(token)
+        expiresIn: "1h",
+      });
       res
-        .cookie('token', token, {
+        .cookie("token", token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
         })
-        .send({ success: true })
-    })
+        .send({ success: true });
+    });
     // delete cookies
-    app.get('/logout', async (req, res) => {
+    app.get("/logout", async (req, res) => {
       res
-        .clearCookie('token', {
+        .clearCookie("token", {
           maxAge: 0,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
         })
-        .send({ success: true })
-    })
+        .send({ success: true });
+    });
 
-    app.post('/logout', (req, res) => {
+    app.post("/logout", (req, res) => {
       res
-          .clearCookie('token', {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
-          })
-          .send({ success: true })
-  })
-
+        .clearCookie("token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true });
+    });
 
     // Add new tutors
     app.post("/find-tutors", async (req, res) => {
@@ -120,6 +119,7 @@ async function run() {
         res.status(500).send("Error fetching data from database");
       }
     });
+   
 
     // Get all tutors or filter by language category
     app.get("/find-tutors", async (req, res) => {
@@ -136,13 +136,14 @@ async function run() {
 
         res.json(data);
       } catch (error) {
-        // console.error("Error fetching data from database:", error);
+        console.error("Error fetching data from database:", error);
         res.status(500).send("Error fetching data from database");
       }
     });
 
     // Get tutor details by ID
-    app.get("/tutor/:details",verifyToken, async (req, res) => {
+    app.get("/tutor/:details", async (req, res) => {
+     
       const { details } = req.params;
       try {
         const tutor = await tutorsCollection.findOne({
@@ -158,7 +159,7 @@ async function run() {
       }
     });
     // update count
-    app.patch("/tutor/:id",async (req, res) => {
+    app.patch("/tutor/:id", async (req, res) => {
       const { id } = req.params;
       const { review } = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -180,19 +181,47 @@ async function run() {
       }
     });
 
-    // Get all bookings
-    app.get("/bookings",verifyToken, async (req, res) => {
+    app.get("/bookings", verifyToken, async (req, res) => {
+      const email = req.query.email;
+      const decodedEmail = req.user?.email;
+    
+      if (decodedEmail !== email) {
+        return res.status(401).send({ message: "Unauthorized access" });
+      }
+    
       try {
-        const data = await bookingsCollection.find({}).toArray();
+        const data = await bookingsCollection.find({ BookingEmail: email }).toArray();
         res.json(data);
       } catch (error) {
+        console.error("Error fetching bookings:", error);
         res.status(500).send("Error fetching bookings");
       }
     });
-
+    app.get("/my-tutorials", verifyToken, async (req, res) => {
+      const email = req.query.email;
+      const decodedEmail = req.user?.email;
+    
+      if (decodedEmail !== email) {
+        return res.status(401).send({ message: "Unauthorized access" });
+      }
+    
+      try {
+        const data = await tutorsCollection.find({ userEmail: email }).toArray();
+        res.json(data);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+        res.status(500).send("Error fetching bookings");
+      }
+    });
+    
     // Update for My Tutorials
 
-    app.patch("/My-Tutorials-update/:id",async (req, res) => {
+    app.patch("/My-Tutorials-update/:id",verifyToken, async (req, res) => {
+      const email = req.params.email
+      const decodedEmail = req.user?.email
+    
+      if (decodedEmail !== email)
+        return res.status(401).send({ message: 'unauthorized access' })
       const { id } = req.params;
       const updateData = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -213,20 +242,26 @@ async function run() {
     });
     // Delete a My Tutorials
     app.delete("/My-Tutorials-delete/:id", async (req, res) => {
+      
+       
+    
       const { id } = req.params;
+    
       try {
         const result = await tutorsCollection.deleteOne({
           _id: new ObjectId(id),
         });
+    
         if (result.deletedCount > 0) {
-          res.json({ message: "Tutorials deleted successfully" });
+          res.json({ message: "Tutorial deleted successfully" });
         } else {
-          res.status(404).json({ error: "Tutorials not found" });
+          res.status(404).json({ error: "Tutorial not found" });
         }
       } catch (error) {
-        res.status(500).json({ error: "Error deleting Tutorials" });
+        res.status(500).json({ error: "Error deleting tutorial" });
       }
     });
+    
 
     // Add a new booking
     app.post("/bookings", async (req, res) => {
