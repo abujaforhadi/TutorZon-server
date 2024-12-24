@@ -33,6 +33,7 @@ async function run() {
     const db = client.db("TutorZon");
     const tutorsCollection = db.collection("tutors");
     const bookingsCollection = db.collection("bookings");
+    const CategoryCollection = db.collection("category");
 
     // Add new tutors
     app.post("/find-tutors", async (req, res) => {
@@ -44,12 +45,31 @@ async function run() {
       }
     });
 
-    // Get all tutors
-    app.get("/find-tutors", async (req, res) => {
+    app.get('/Category',async(req,res)=>{
       try {
-        const data = await tutorsCollection.find({}).toArray();
+        const data = await CategoryCollection.find({}).toArray();
         res.json(data);
       } catch (error) {
+        res.status(500).send("Error fetching data from database");
+      }
+    })
+
+    // Get all tutors or filter by language category
+    app.get("/find-tutors", async (req, res) => {
+      const { language } = req.query; 
+    
+      try {
+        let data;
+        
+        if (language) {
+          data = await tutorsCollection.find({ language }).toArray();
+        } else {
+          data = await tutorsCollection.find({}).toArray();
+        }
+    
+        res.json(data); 
+      } catch (error) {
+        // console.error("Error fetching data from database:", error);
         res.status(500).send("Error fetching data from database");
       }
     });
@@ -92,6 +112,7 @@ async function run() {
         res.status(500).json({ error: "Error updating review" });
       }
     });
+
     
 
     // Get all bookings
