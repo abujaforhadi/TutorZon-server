@@ -64,6 +64,9 @@ async function run() {
     const tutorsCollection = db.collection("tutors");
     const bookingsCollection = db.collection("bookings");
     const CategoryCollection = db.collection("category");
+    const UserCollection = db.collection("users");
+
+    await UserCollection.createIndex({ email: 1 }, { unique: true });
 
     // save as cookies
     app.post("/jwt", async (req, res) => {
@@ -121,7 +124,6 @@ async function run() {
     });
    
 
-    // Get all tutors or filter by language category
     app.get("/find-tutors", async (req, res) => {
       const { language } = req.query;
 
@@ -140,6 +142,15 @@ async function run() {
         res.status(500).send("Error fetching data from database");
       }
     });
+    // app.get("/total-reviews", async (req, res) => {
+      
+    //    const
+    //       data = await tutorsCollection.find({}).toArray();
+        
+
+    //     res.json(data);
+      
+    // });
 
     // Get tutor details by ID
     app.get("/tutor/:details", async (req, res) => {
@@ -216,12 +227,8 @@ async function run() {
     
     // Update for My Tutorials
 
-    app.patch("/My-Tutorials-update/:id",verifyToken, async (req, res) => {
-      const email = req.params.email
-      const decodedEmail = req.user?.email
-    
-      if (decodedEmail !== email)
-        return res.status(401).send({ message: 'unauthorized access' })
+    app.patch("/My-Tutorials-update/:id",async (req, res) => {
+     
       const { id } = req.params;
       const updateData = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -240,7 +247,6 @@ async function run() {
         res.status(500).json({ error: "Error updating booking" });
       }
     });
-    // Delete a My Tutorials
     app.delete("/My-Tutorials-delete/:id", async (req, res) => {
       
        
@@ -261,7 +267,36 @@ async function run() {
         res.status(500).json({ error: "Error deleting tutorial" });
       }
     });
-    
+    app.post("/user", async (req, res) => {
+      const { email, displayName, photoURL } = req.body;
+
+      try {
+        const existingUser = await UserCollection.findOne({ email });
+        if (existingUser) {
+          return res.status(400).json({ error: "User already exists" });
+        }
+
+        const result = await UserCollection.insertOne({ email, displayName, photoURL });
+        res.json({
+          message: "User created successfully",
+          insertedId: result.insertedId,
+        });
+      } catch (error) {
+        console.error("Error creating user:", error);
+        res.status(500).json({ error: "Error creating user" });
+      }
+    });
+
+    app.get("/stats/users-count", async (req, res) => {
+      try {
+        const count = await UserCollection.countDocuments();
+        res.json({ count });
+      } catch (error) {
+        console.error("Error fetching users count:", error);
+        res.status(500).send("Error fetching users count");
+      }
+    });
+
 
     // Add a new booking
     app.post("/bookings", async (req, res) => {
