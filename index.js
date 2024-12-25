@@ -21,7 +21,9 @@ app.use(
       "http://localhost:5173",
       "assigment11-7f8f3.web.app",
       "tutorzen.abujafor.me",
-      "assigment11-7f8f3.firebaseapp.com",
+      "https://tutorzen.abujafor.me",
+      "https://assigment11-7f8f3.web.app",
+      "https://assigment11-7f8f3.firebaseapp.com",
     ],
     credentials: true,
     optionsSuccessStatus: 200,
@@ -55,10 +57,10 @@ const client = new MongoClient(uri, {
   },
 });
 
-async function run() {
+ function run() {
   try {
-    await client.connect();
-    console.log("Connected to MongoDB!");
+    //  client.connect();
+    // console.log("Connected to MongoDB!");
 
     const db = client.db("TutorZon");
     const tutorsCollection = db.collection("tutors");
@@ -66,7 +68,7 @@ async function run() {
     const CategoryCollection = db.collection("category");
     const UserCollection = db.collection("users");
 
-    await UserCollection.createIndex({ email: 1 }, { unique: true });
+    //  UserCollection.createIndex({ email: 1 }, { unique: true });
 
     // save as cookies
     app.post("/jwt", async (req, res) => {
@@ -84,15 +86,15 @@ async function run() {
         .send({ success: true });
     });
     // delete cookies
-    app.get("/logout", async (req, res) => {
-      res
-        .clearCookie("token", {
-          maxAge: 0,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-        })
-        .send({ success: true });
-    });
+    // app.get("/logout", async (req, res) => {
+    //   res
+    //     .clearCookie("token", {
+    //       maxAge: 0,
+    //       secure: process.env.NODE_ENV === "production",
+    //       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    //     })
+    //     .send({ success: true });
+    // });
 
     app.post("/logout", (req, res) => {
       res
