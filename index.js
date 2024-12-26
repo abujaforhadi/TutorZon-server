@@ -275,7 +275,7 @@ const client = new MongoClient(uri, {
       try {
         const existingUser = await UserCollection.findOne({ email });
         if (existingUser) {
-          return res.status(400).json({ error: "User already exists" });
+          return res.status(200).json({ error: "User already exists" });
         }
 
         const result = await UserCollection.insertOne({ email, displayName, photoURL });
