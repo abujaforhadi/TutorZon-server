@@ -19,16 +19,15 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "assigment11-7f8f3.web.app",
-      "tutorzon.abujafor.me",
-      "https://tutorzon.abujafor.me",
       "https://assigment11-7f8f3.web.app",
       "https://assigment11-7f8f3.firebaseapp.com",
+      "https://tutorzon.abujafor.me", 
     ],
     credentials: true,
     optionsSuccessStatus: 200,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
