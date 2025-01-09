@@ -5,7 +5,11 @@ TutorZon is an Online Tutor Booking Platform designed to connect users with tuto
 
 
 ## Live URL
+<<<<<<< HEAD
 [Visit TutorZon](https://assigment11-7f8f3.web.app/) 
+=======
+[Visit TutorZon](https://assigment11-7f8f3.web.app/)
+>>>>>>> 87eba1e633febd60301cca45c0aa3c72fd29fb10
 
 ## GitHub Repositories
 - **Client Repository:** [GitHub - TutorZon Client](https://github.com/abujaforhadi/TutorZon-client)
