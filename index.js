@@ -21,7 +21,7 @@ app.use(
       "http://localhost:5173",
       "https://assigment11-7f8f3.web.app",
       "https://assigment11-7f8f3.firebaseapp.com",
-      "https://tutorzon.abujafor.me", 
+      "https://tutorzen.abujafor.me", 
     ],
     credentials: true,
     optionsSuccessStatus: 200,
