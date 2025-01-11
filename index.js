@@ -62,7 +62,7 @@ const client = new MongoClient(uri, {
     //  client.connect();
     // console.log("Connected to MongoDB!");
 
-    const db = client.db("TutorZen");
+    const db = client.db("TutorZon");
     const tutorsCollection = db.collection("tutors");
     const bookingsCollection = db.collection("bookings");
     const CategoryCollection = db.collection("category");
