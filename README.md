@@ -12,8 +12,8 @@ TutorZen is an Online Tutor Booking Platform designed to connect users with tuto
 >>>>>>> 87eba1e633febd60301cca45c0aa3c72fd29fb10
 
 ## GitHub Repositories
-- **Client Repository:** [GitHub - TutorZen Client](https://github.com/abujaforhadi/TutorZen-client)
-- **Server Repository:** [GitHub - TutorZen Server](git remote add origin https://github.com/abujaforhadi/TutorZen-server)
+- **Client Repository:** [GitHub - TutorZen Client](https://github.com/abujaforhadi/TutorZon-client)
+- **Server Repository:** [GitHub - TutorZen Server](git remote add origin https://github.com/abujaforhadi/TutorZon-server)
 
 ## Key Features
 - **Registration/Login**: Users can register using email and password or via Google Sign-In.
@@ -37,4 +37,4 @@ TutorZen is an Online Tutor Booking Platform designed to connect users with tuto
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/abujaforhadi/TutorZen-client.git
+   git clone https://github.com/abujaforhadi/TutorZon-client.git
